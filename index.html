@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Apod - Astronomy Picture of the Day</title>
+</head>
+<body>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        background: black;
+        color: white;
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    img {
+        max-width: 100%;
+        max-height: 90vh;
+        display: block;
+        margin: auto;
+    }
+
+    .buttons {
+        text-align: center;
+    }
+
+    .buttons a {
+        padding: 10px;
+        border: 1px solid white;
+        margin: 0 10px;
+    }
+</style>
+
+<h1>Astronomy Picture of the Day</h1>
+
+<img id="image-day" src="" alt="Picture of the Day">
+
+<div class="buttons">
+    <a id="prev">Previous Date</a>
+    <a id="next">Next Date</a>
+</div>
+
+<script src="https://npmcdn.com/axios/dist/axios.min.js"></script>
+<script src="http://momentjs.com/downloads/moment.min.js"></script>
+<script>
+
+    var initialDate = moment().format("YYYY-MM-DD");
+
+    var token = 'NNKOjkoul8n1CH18TWA9gwngW1s1SmjESPjNoUFo';
+    var url = 'https://api.nasa.gov/planetary/apod?api_key='+ token;
+
+    var imgDay = document.getElementById('image-day'),
+        prev = document.getElementById('prev'),
+        next = document.getElementById('next');
+
+    prev.addEventListener('click', getPreviousData);
+    next.addEventListener('click', getNextData);
+
+    function getNasaData (data) {
+        axios.get(url, {
+                params: {
+                   date: data
+                }
+            })
+            .then(function (response) {
+                if (window.innerWidth > 1024) {
+                    imgDay.src = response.data.hdurl
+                }
+                else {
+                    imgDay.src = response.data.url
+                }
+            })
+    }
+
+    function getPreviousData () {
+        initialDate = moment(initialDate).subtract(1, 'days').format('YYYY-MM-DD');
+        getNasaData(initialDate);
+    }
+
+    function getNextData () {
+        initialDate = moment(initialDate).add(1, 'days').format('YYYY-MM-DD');
+        getNasaData(initialDate);
+    }
+
+    getNasaData(initialDate);
+
+</script>
+</body>
+</html>
