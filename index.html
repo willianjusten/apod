@@ -21,11 +21,18 @@
         text-align: center;
     }
 
-    img {
+    img, 
+    #loading {
         max-width: 100%;
         max-height: 90vh;
         display: block;
         margin: auto;
+    }
+
+    #loading {
+        display: none;
+        margin: 40vh 0;
+        text-align: center;
     }
 
     .buttons {
@@ -41,6 +48,7 @@
 
 <h1>Astronomy Picture of the Day</h1>
 
+<h2 id="loading">Loading...</h2>
 <img id="image-day" src="" alt="Picture of the Day">
 
 <div class="buttons">
@@ -60,9 +68,10 @@
     var token = 'NNKOjkoul8n1CH18TWA9gwngW1s1SmjESPjNoUFo';
     var url = 'https://api.nasa.gov/planetary/apod?api_key='+ token;
 
-    var imgDay = document.getElementById('image-day'),
-        prev = document.getElementById('prev'),
-        next = document.getElementById('next');
+    var imgDay = $('#image-day'),
+        prev = $('#prev'),
+        next = $('#next'),
+        loading = $('#loading');
 
     var picker = new Pikaday({
         field: document.getElementById('datepicker'),
@@ -72,21 +81,28 @@
         }
     });
 
-    prev.addEventListener('click', getPreviousData);
-    next.addEventListener('click', getNextData);
+    prev.on('click', getPreviousData);
+    next.on('click', getNextData);
 
     function getNasaData (data) {
+
+        imgDay.css('display','none');
+        loading.css('display', 'block');
+
         axios.get(url, {
                 params: {
                    date: data
                 }
             })
             .then(function (response) {
+                imgDay.css('display', 'block');
+                loading.css('display', 'none');
+
                 if (window.innerWidth > 1600) {
-                    imgDay.src = response.data.hdurl
+                    imgDay.attr('src', response.data.hdurl)
                 }
                 else {
-                    imgDay.src = response.data.url
+                    imgDay.attr('src', response.data.url)
                 }
             })
     }
