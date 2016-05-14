@@ -4,7 +4,7 @@
     <title>Apod - Astronomy Picture of the Day</title>
 </head>
 <body>
-
+<link rel="stylesheet" href="http://dbushell.github.io/Pikaday/css/pikaday.css">
 <style>
     * {
         margin: 0;
@@ -46,10 +46,13 @@
 <div class="buttons">
     <a id="prev">Previous Date</a>
     <a id="next">Next Date</a>
+    <a id="datepicker">Choose a Date</a>
 </div>
 
+<script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
 <script src="https://npmcdn.com/axios/dist/axios.min.js"></script>
 <script src="http://momentjs.com/downloads/moment.min.js"></script>
+<script src="http://dbushell.github.io/Pikaday/pikaday.js"></script>
 <script>
 
     var initialDate = moment().format("YYYY-MM-DD");
@@ -60,6 +63,14 @@
     var imgDay = document.getElementById('image-day'),
         prev = document.getElementById('prev'),
         next = document.getElementById('next');
+
+    var picker = new Pikaday({
+        field: document.getElementById('datepicker'),
+        format: 'YYYY-MM-DD',
+        onSelect: function() {
+            getNasaData(this.getMoment().format('YYYY-MM-DD'));
+        }
+    });
 
     prev.addEventListener('click', getPreviousData);
     next.addEventListener('click', getNextData);
